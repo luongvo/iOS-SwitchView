@@ -1,6 +1,7 @@
 package vn.luongvo.widget.iosswitchview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -21,8 +22,11 @@ import android.view.animation.AccelerateInterpolator;
 
 public class SwitchView extends View {
 
-    private final int colorON = 0xffe13a8e;
-    private final int colorOFF = 0xffe3e3e3;
+    private final int DEFAULT_COLOR_ON = 0xff53d769;
+    private final int DEFAULT_COLOR_OFF = 0xffe3e3e3;
+
+    private int colorOn = DEFAULT_COLOR_ON;
+    private int colorOff = DEFAULT_COLOR_OFF;
 
     private final Paint paint = new Paint();
     private final Path sPath = new Path();
@@ -81,7 +85,18 @@ public class SwitchView extends View {
 
     public SwitchView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
+    }
+
+    private void init(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.app);
+        try {
+            colorOn = a.getColor(R.styleable.app_color_on, DEFAULT_COLOR_ON);
+            colorOff = a.getColor(R.styleable.app_color_off, DEFAULT_COLOR_OFF);
+        } finally {
+            a.recycle();
+        }
     }
 
     @Override
@@ -207,10 +222,10 @@ public class SwitchView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         paint.setAntiAlias(true);
-        final boolean isOn = (state == STATE_SWITCH_ON || state == STATE_SWITCH_ON2);
+        final boolean isChecked = (state == STATE_SWITCH_ON || state == STATE_SWITCH_ON2);
         // draw background
         paint.setStyle(Style.FILL);
-        paint.setColor(isOn ? colorON : colorOFF);
+        paint.setColor(isChecked ? colorOn : colorOff);
         canvas.drawPath(sPath, paint);
 
         sAnim = sAnim - 0.1f > 0 ? sAnim - 0.1f : 0;
@@ -219,8 +234,8 @@ public class SwitchView extends View {
         final float dsAnim = aInterpolator.getInterpolation(sAnim);
         final float dbAnim = aInterpolator.getInterpolation(bAnim);
         // draw background animation
-        final float scale = sScale * (isOn ? dsAnim : 1 - dsAnim);
-        final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isOn ? 1 - dsAnim : dsAnim);
+        final float scale = sScale * (isChecked ? dsAnim : 1 - dsAnim);
+        final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isChecked ? 1 - dsAnim : dsAnim);
         canvas.save();
         canvas.scale(scale, scale, sCenterX + scaleOffset, sCenterY);
         paint.setColor(0xffffffff);
@@ -247,7 +262,7 @@ public class SwitchView extends View {
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(bStrokeWidth * 0.5f);
 
-        paint.setColor(isOn ? 0xff4ada60 : 0xffbfbfbf);
+        paint.setColor(isChecked ? 0xff4ada60 : 0xffbfbfbf);
         canvas.drawPath(bPath, paint);
 
         canvas.restore();
