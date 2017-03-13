@@ -73,6 +73,8 @@ public class SwitchView extends View {
 
     private float shadowHeight;
 
+    private OnStateChangedListener listener;
+
     public SwitchView(Context context) {
         this(context, null);
     }
@@ -148,8 +150,8 @@ public class SwitchView extends View {
 
     private float calcBTranslate(float percent) {
         float result = 0;
-        int wich = state - lastState;
-        switch (wich) {
+        int switchState = state - lastState;
+        switch (switchState) {
             case 1:
                 // off -> off2
                 if (state == STATE_SWITCH_OFF2) {
@@ -271,9 +273,15 @@ public class SwitchView extends View {
                     invalidate();
 
                     if (state == STATE_SWITCH_OFF2) {
-                        listener.toggleToOn(this);
+                        toggle(STATE_SWITCH_ON);
+                        if (listener != null) {
+                            listener.toggleToOn(this);
+                        }
                     } else if (state == STATE_SWITCH_ON2) {
-                        listener.toggleToOff(this);
+                        toggle(STATE_SWITCH_OFF);
+                        if (listener != null) {
+                            listener.toggleToOff(this);
+                        }
                     }
                     break;
             }
@@ -316,48 +324,25 @@ public class SwitchView extends View {
      *
      * @param isOpened
      */
-    public void toggleSwitch(final boolean isOpened) {
+    public void toggle(final boolean isOpened) {
         this.isOpened = isOpened;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                toggleSwitch(isOpened ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
+                toggle(isOpened ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
             }
         }, 300);
     }
 
-    private synchronized void toggleSwitch(int wich) {
-        if (wich == STATE_SWITCH_ON || wich == STATE_SWITCH_OFF) {
-            if ((wich == STATE_SWITCH_ON && (lastState == STATE_SWITCH_OFF || lastState == STATE_SWITCH_OFF2))
-                    || (wich == STATE_SWITCH_OFF && (lastState == STATE_SWITCH_ON || lastState == STATE_SWITCH_ON2))) {
+    private synchronized void toggle(int switchState) {
+        if (switchState == STATE_SWITCH_ON || switchState == STATE_SWITCH_OFF) {
+            if ((switchState == STATE_SWITCH_ON && (lastState == STATE_SWITCH_OFF || lastState == STATE_SWITCH_OFF2))
+                    || (switchState == STATE_SWITCH_OFF && (lastState == STATE_SWITCH_ON || lastState == STATE_SWITCH_ON2))) {
                 sAnim = 1;
             }
             bAnim = 1;
-            refreshState(wich);
+            refreshState(switchState);
         }
-    }
-
-    public interface OnStateChangedListener {
-        void toggleToOn(View view);
-
-        void toggleToOff(View view);
-    }
-
-    private OnStateChangedListener listener = new OnStateChangedListener() {
-        @Override
-        public void toggleToOn(View view) {
-            toggleSwitch(STATE_SWITCH_ON);
-        }
-
-        @Override
-        public void toggleToOff(View view) {
-            toggleSwitch(STATE_SWITCH_OFF);
-        }
-    };
-
-    public void setOnStateChangedListener(OnStateChangedListener listener) {
-        if (listener == null) throw new IllegalArgumentException("empty listener");
-        this.listener = listener;
     }
 
     @Override
@@ -393,5 +378,17 @@ public class SwitchView extends View {
             super.writeToParcel(out, flags);
             out.writeInt(isOpened ? 1 : 0);
         }
+
+    }
+
+    public interface OnStateChangedListener {
+        void toggleToOn(View view);
+
+        void toggleToOff(View view);
+    }
+
+    public void setOnStateChangedListener(OnStateChangedListener listener) {
+        if (listener == null) throw new IllegalArgumentException("empty listener");
+        this.listener = listener;
     }
 }
