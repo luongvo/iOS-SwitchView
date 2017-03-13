@@ -1,5 +1,6 @@
 # iOS-SwitchView
 [![](https://jitpack.io/v/luongvo/iOS-SwitchView.svg)](https://jitpack.io/#luongvo/iOS-SwitchView)
+
 A lightweight iOS switch view style for Android
 
 ![Image](images/preview.gif)
