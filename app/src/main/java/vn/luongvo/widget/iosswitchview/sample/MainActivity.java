@@ -15,15 +15,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final SwitchView switchView = (SwitchView) findViewById(R.id.switchview);
-        switchView.setOnStateChangedListener(new SwitchView.OnStateChangedListener() {
+        switchView.setOnCheckedChangeListener(new SwitchView.OnCheckedChangeListener() {
             @Override
-            public void toggleToOn(View view) {
-                Toast.makeText(MainActivity.this, "StateChanged: On", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void toggleToOff(View view) {
-                Toast.makeText(MainActivity.this, "StateChanged: Off", Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(SwitchView switchView, boolean isChecked) {
+                Toast.makeText(MainActivity.this, "onCheckedChanged: " + isChecked,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

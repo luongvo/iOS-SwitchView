@@ -57,7 +57,7 @@ public class SwitchView extends View {
      */
     private int lastState = state;
 
-    private boolean isOpened = false;
+    private boolean isChecked = false;
 
     private int mWidth, mHeight;
     private float sWidth, sHeight;
@@ -73,7 +73,7 @@ public class SwitchView extends View {
 
     private float shadowHeight;
 
-    private OnStateChangedListener listener;
+    private OnCheckedChangeListener onCheckedChangeListener;
 
     public SwitchView(Context context) {
         this(context, null);
@@ -274,14 +274,12 @@ public class SwitchView extends View {
 
                     if (state == STATE_SWITCH_OFF2) {
                         toggle(STATE_SWITCH_ON);
-                        if (listener != null) {
-                            listener.toggleToOn(this);
-                        }
                     } else if (state == STATE_SWITCH_ON2) {
                         toggle(STATE_SWITCH_OFF);
-                        if (listener != null) {
-                            listener.toggleToOff(this);
-                        }
+                    }
+
+                    if (onCheckedChangeListener != null) {
+                        onCheckedChangeListener.onCheckedChanged(this, isChecked);
                     }
                     break;
             }
@@ -290,10 +288,10 @@ public class SwitchView extends View {
     }
 
     private void refreshState(int newState) {
-        if (!isOpened && newState == STATE_SWITCH_ON) {
-            isOpened = true;
-        } else if (isOpened && newState == STATE_SWITCH_OFF) {
-            isOpened = false;
+        if (!isChecked && newState == STATE_SWITCH_ON) {
+            isChecked = true;
+        } else if (isChecked && newState == STATE_SWITCH_OFF) {
+            isChecked = false;
         }
         lastState = state;
         state = newState;
@@ -303,18 +301,18 @@ public class SwitchView extends View {
     /**
      * @return the state of switch view
      */
-    public boolean isOpened() {
-        return isOpened;
+    public boolean isChecked() {
+        return isChecked;
     }
 
     /**
      * if set true , the state change to on;
      * if set false, the state change to off
      *
-     * @param isOpened
+     * @param isChecked
      */
-    public void setOpened(boolean isOpened) {
-        refreshState(isOpened ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
+    public void setChecked(boolean isChecked) {
+        refreshState(isChecked ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
     }
 
     /**
@@ -322,14 +320,14 @@ public class SwitchView extends View {
      * if set false, the state change to off
      * <br><b>change state with animation</b>
      *
-     * @param isOpened
+     * @param isChecked
      */
-    public void toggle(final boolean isOpened) {
-        this.isOpened = isOpened;
+    public void toggle(final boolean isChecked) {
+        this.isChecked = isChecked;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                toggle(isOpened ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
+                toggle(isChecked ? STATE_SWITCH_ON : STATE_SWITCH_OFF);
             }
         }, 300);
     }
@@ -345,11 +343,19 @@ public class SwitchView extends View {
         }
     }
 
+    public interface OnCheckedChangeListener {
+        void onCheckedChanged(SwitchView switchView, boolean isChecked);
+    }
+
+    public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
+        this.onCheckedChangeListener = listener;
+    }
+
     @Override
     public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState ss = new SavedState(superState);
-        ss.isOpened = isOpened;
+        ss.isChecked = isChecked;
         return ss;
     }
 
@@ -357,12 +363,12 @@ public class SwitchView extends View {
     public void onRestoreInstanceState(Parcelable state) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
-        this.isOpened = ss.isOpened;
-        this.state = this.isOpened ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
+        this.isChecked = ss.isChecked;
+        this.state = this.isChecked ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
     }
 
     static final class SavedState extends BaseSavedState {
-        private boolean isOpened;
+        private boolean isChecked;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -370,25 +376,13 @@ public class SwitchView extends View {
 
         private SavedState(Parcel in) {
             super(in);
-            isOpened = 1 == in.readInt();
+            isChecked = 1 == in.readInt();
         }
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeInt(isOpened ? 1 : 0);
+            out.writeInt(isChecked ? 1 : 0);
         }
-
-    }
-
-    public interface OnStateChangedListener {
-        void toggleToOn(View view);
-
-        void toggleToOff(View view);
-    }
-
-    public void setOnStateChangedListener(OnStateChangedListener listener) {
-        if (listener == null) throw new IllegalArgumentException("empty listener");
-        this.listener = listener;
     }
 }
