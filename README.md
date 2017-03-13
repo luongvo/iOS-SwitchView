@@ -3,7 +3,7 @@
 
 A lightweight iOS switch view style for Android
 
-![Image](images/preview.gif)
+<img src="images/preview.gif" width="500">
 
 # Usage
 Add SwitchView into xml layout
