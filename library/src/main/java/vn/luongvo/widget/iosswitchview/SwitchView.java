@@ -94,6 +94,9 @@ public class SwitchView extends View {
         try {
             colorOn = a.getColor(R.styleable.app_color_on, DEFAULT_COLOR_ON);
             colorOff = a.getColor(R.styleable.app_color_off, DEFAULT_COLOR_OFF);
+            isChecked = a.getBoolean(R.styleable.app_checked, false);
+
+            state = isChecked ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
         } finally {
             a.recycle();
         }

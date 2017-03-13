@@ -1,5 +1,6 @@
 <resources>
     <declare-styleable name="app">
+        <attr name="checked" format="boolean" />
         <attr name="color_on" format="color" />
         <attr name="color_off" format="color" />
     </declare-styleable>

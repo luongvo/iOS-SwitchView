@@ -17,6 +17,7 @@
     <vn.luongvo.widget.iosswitchview.SwitchView
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        app:checked="true"
         app:color_off="#e13a8e"
         app:color_on="#ef5e43" />
 
