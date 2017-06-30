@@ -1,7 +1,11 @@
 <resources>
-    <declare-styleable name="app">
+    <declare-styleable name="CustomSwitchView">
         <attr name="checked" format="boolean" />
-        <attr name="color_on" format="color" />
-        <attr name="color_off" format="color" />
+        <attr name="onColor" format="color" />
+        <attr name="offColor" format="color" />
+        <attr name="onIconColor" format="color" />
+        <attr name="offIconColor" format="color" />
+        <attr name="onIcon" format="reference" />
+        <attr name="offIcon" format="reference" />
     </declare-styleable>
 </resources>
