@@ -9,16 +9,55 @@
     android:padding="10dp"
     tools:context=".MainActivity">
 
-    <vn.luongvo.widget.iosswitchview.SwitchView
-        android:id="@+id/switchview"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content" />
 
     <vn.luongvo.widget.iosswitchview.SwitchView
-        android:layout_width="50dp"
+        android:id="@+id/switchview"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         app:checked="true"
-        app:color_off="#e13a8e"
-        app:color_on="#ef5e43" />
+        app:offColor="#cccccc"
+        app:onColor="#24ac1b"
+        />
+
+    <vn.luongvo.widget.iosswitchview.SwitchView
+        android:id="@+id/switchview1"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:checked="true"
+        app:offColor="#cccccc"
+        app:onColor="#24ac1b"
+        app:onIcon="@drawable/contact_phone_icon"
+        app:offIcon="@drawable/contact_phone_icon"
+        />
+
+    <vn.luongvo.widget.iosswitchview.SwitchView
+        android:id="@+id/switchview2"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:checked="true"
+        app:offColor="#cccccc"
+        app:onColor="#24ac1b"
+        app:onIconColor="#ffffff"
+        app:offIconColor="#888888"
+        app:onIcon="@drawable/armed_lock"
+        app:offIcon="@drawable/disarmed_lock"
+        />
+
+    <vn.luongvo.widget.iosswitchview.SwitchView
+        android:id="@+id/switchview3"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:checked="true"
+        app:offColor="#FF3B30"
+        app:onColor="#24ac1b"
+        app:onIconColor="#ffffff"
+        app:offIconColor="#ffffff"
+        app:onIcon="@drawable/checkmark"
+        app:offIcon="@drawable/remove_icon"
+        />
 
 </LinearLayout>

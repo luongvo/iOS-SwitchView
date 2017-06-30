@@ -2,13 +2,19 @@ package vn.luongvo.widget.iosswitchview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -25,8 +31,15 @@ public class SwitchView extends View {
     private final int DEFAULT_COLOR_ON = 0xff53d769;
     private final int DEFAULT_COLOR_OFF = 0xffe3e3e3;
 
+    private final int DEFAULT_ICON_COLOR_ON = Color.WHITE;
+    private final int DEFAULT_ICON_COLOR_OFF = Color.GRAY;
+
     private int colorOn = DEFAULT_COLOR_ON;
     private int colorOff = DEFAULT_COLOR_OFF;
+    private int onIcon = -1;
+    private int offIcon = -1;
+    private int onIconColor = DEFAULT_ICON_COLOR_ON;
+    private int offIconColor = DEFAULT_ICON_COLOR_OFF;
 
     private final Paint paint = new Paint();
     private final Path sPath = new Path();
@@ -90,11 +103,15 @@ public class SwitchView extends View {
     }
 
     private void init(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.app);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomSwitchView);
         try {
-            colorOn = a.getColor(R.styleable.app_color_on, DEFAULT_COLOR_ON);
-            colorOff = a.getColor(R.styleable.app_color_off, DEFAULT_COLOR_OFF);
-            isChecked = a.getBoolean(R.styleable.app_checked, false);
+            colorOn = a.getColor(R.styleable.CustomSwitchView_onColor, DEFAULT_COLOR_ON);
+            colorOff = a.getColor(R.styleable.CustomSwitchView_offColor, DEFAULT_COLOR_OFF);
+            onIconColor = a.getColor(R.styleable.CustomSwitchView_onIconColor, DEFAULT_ICON_COLOR_ON);
+            offIconColor = a.getColor(R.styleable.CustomSwitchView_offIconColor, DEFAULT_ICON_COLOR_OFF);
+            onIcon = a.getResourceId(R.styleable.CustomSwitchView_onIcon, -1);
+            offIcon = a.getResourceId(R.styleable.CustomSwitchView_offIcon, -1);
+            isChecked = a.getBoolean(R.styleable.CustomSwitchView_checked, false);
 
             state = isChecked ? STATE_SWITCH_ON : STATE_SWITCH_OFF;
         } finally {
@@ -105,7 +122,9 @@ public class SwitchView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize = (int) (widthSize * 0.65f);
+//        float widthFactor = onIcon != -1 ? 0.55f : 0.65f;
+        float widthFactor = 0.55f;
+        int heightSize = (int) (widthSize * widthFactor);
         setMeasuredDimension(widthSize, heightSize);
     }
 
@@ -241,7 +260,8 @@ public class SwitchView extends View {
         final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isChecked ? 1 - dsAnim : dsAnim);
         canvas.save();
         canvas.scale(scale, scale, sCenterX + scaleOffset, sCenterY);
-        paint.setColor(0xffffffff);
+//        paint.setColor(0xffffffff);
+        paint.setColor(colorOff);
         canvas.drawPath(sPath, paint);
         canvas.restore();
         // draw center bar
@@ -269,6 +289,38 @@ public class SwitchView extends View {
         canvas.drawPath(bPath, paint);
 
         canvas.restore();
+
+        // handle icons
+        try{
+            float iconPaddTB = getHeight() / 6f;
+            float iconPaddRL = getHeight() / 3f;
+            float iconDimenTB = getHeight() - (iconPaddTB*1.8f);
+            float iconDimenRL = getHeight() - iconPaddTB;
+            int iconResId = -1;
+            RectF iconRect = new RectF();
+            if(isChecked && onIcon != -1){
+                iconResId = onIcon;
+                iconRect = new RectF(iconPaddRL, iconPaddTB, iconDimenRL, iconDimenTB);
+            }else if(offIcon != -1){
+                iconResId = offIcon;
+                iconRect = new RectF(getWidth()-iconDimenRL, iconPaddTB, getWidth()-iconPaddRL, iconDimenTB);
+            }
+
+            if(iconResId != -1){
+                Paint iconPaint = new Paint();
+                ColorFilter filter = new PorterDuffColorFilter(isChecked ? onIconColor : offIconColor, PorterDuff.Mode.SRC_IN);
+                iconPaint.setColorFilter(filter);
+                iconPaint.setStyle(Style.FILL);
+
+                Bitmap icon = ((BitmapDrawable)getResources().getDrawable(iconResId)).getBitmap();
+                canvas.drawBitmap(icon, null, iconRect, iconPaint);
+            }
+
+        }catch(Exception e){
+
+        }
+
+
 
         paint.reset();
         if (sAnim > 0 || bAnim > 0) invalidate();
