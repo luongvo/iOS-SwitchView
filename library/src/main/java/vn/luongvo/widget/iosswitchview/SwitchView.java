@@ -265,7 +265,7 @@ public class SwitchView extends View {
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(bStrokeWidth * 0.5f);
 
-        paint.setColor(isChecked ? 0xff4ada60 : 0xffbfbfbf);
+        paint.setColor(isChecked ? colorOn : colorOff);
         canvas.drawPath(bPath, paint);
 
         canvas.restore();
@@ -402,5 +402,16 @@ public class SwitchView extends View {
             super.writeToParcel(out, flags);
             out.writeInt(isChecked ? 1 : 0);
         }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+                    public SavedState createFromParcel(Parcel in) {
+                        return new SavedState(in);
+                    }
+
+                    public SavedState[] newArray(int size) {
+                        return new SavedState[size];
+                    }
+                };
     }
 }
