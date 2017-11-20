@@ -402,12 +402,13 @@ public class SwitchView extends View {
             super.writeToParcel(out, flags);
             out.writeInt(isChecked ? 1 : 0);
         }
-        
+
         public static final Parcelable.Creator<SavedState> CREATOR =
-            new Parcelable.Creator<SavedState>() {
+                new Parcelable.Creator<SavedState>() {
                     public SavedState createFromParcel(Parcel in) {
                         return new SavedState(in);
                     }
+
                     public SavedState[] newArray(int size) {
                         return new SavedState[size];
                     }
