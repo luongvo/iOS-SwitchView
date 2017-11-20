@@ -46,6 +46,6 @@ allprojects {
 **Step 2.** Add the dependency
 ```groovy
 dependencies {
-    compile 'com.github.luongvo:iOS-SwitchView:1.0.0'
+    compile 'com.github.luongvo:iOS-SwitchView:[LATEST_VERSION]'
 }
 ```
