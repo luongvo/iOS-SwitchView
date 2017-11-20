@@ -18,7 +18,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         app:checked="true"
-        app:color_off="#e13a8e"
+        app:color_off="#ef5e43"
         app:color_on="#ef5e43" />
 
 </LinearLayout>
