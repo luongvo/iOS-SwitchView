@@ -241,7 +241,7 @@ public class SwitchView extends View {
         final float scaleOffset = (bOnLeftX + bRadius - sCenterX) * (isChecked ? 1 - dsAnim : dsAnim);
         canvas.save();
         canvas.scale(scale, scale, sCenterX + scaleOffset, sCenterY);
-        paint.setColor(0xffffffff);
+        paint.setColor(colorOff);
         canvas.drawPath(sPath, paint);
         canvas.restore();
         // draw center bar
