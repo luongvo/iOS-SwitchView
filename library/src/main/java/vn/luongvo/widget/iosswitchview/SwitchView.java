@@ -276,7 +276,7 @@ public class SwitchView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if ((state == STATE_SWITCH_ON || state == STATE_SWITCH_OFF) && (sAnim * bAnim == 0)) {
+        if ((state == STATE_SWITCH_ON || state == STATE_SWITCH_OFF) && (sAnim * bAnim == 0) && isEnabled()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     return true;
